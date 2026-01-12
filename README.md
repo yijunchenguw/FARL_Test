@@ -34,7 +34,7 @@ To install this package from source:
 
 ``` r
 if (!require(devtools)) install.packages("devtools")
-devtools::install_github("MAP-LAB-UW/FARL", build_vignettes = T)
+devtools::install_github("yijunchenguw/FARL_Test", build_vignettes = TRUE)
 torch::install_torch()
 ```
 

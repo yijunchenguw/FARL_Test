@@ -36,7 +36,7 @@ Most **Linux** distributions should already have up to date compilers (or if not
 2) Install the `devtools` package (if necessary), and install the package from [GitHub](https://github.com/) with
 ``` {r eval = F}
 if (!require(devtools)) install.packages("devtools")
-devtools::install_github("MAP-LAB-UW/FARL", build_vignettes = T)
+devtools::install_github("yijunchenguw/FARL_Test", build_vignettes = TRUE)
 torch::install_torch()
 ```
 
