@@ -28,3 +28,9 @@ Depends:
     R (>= 3.10)
 LazyData: true
 RoxygenNote: 7.3.3
+URL: https://yijunchenguw.github.io/FARL_Test/, https://github.com/yijunchenguw/FARL_Test
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+
