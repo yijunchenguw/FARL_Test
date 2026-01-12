@@ -1,0 +1,14 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>http://127.0.0.1:8000/404.html</loc></url>
+<url><loc>http://127.0.0.1:8000/articles/FARL.html</loc></url>
+<url><loc>http://127.0.0.1:8000/articles/index.html</loc></url>
+<url><loc>http://127.0.0.1:8000/authors.html</loc></url>
+<url><loc>http://127.0.0.1:8000/index.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/FARL-package.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/drawPVs.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/factor.analysis.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/farlr_em.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/index.html</loc></url>
+<url><loc>http://127.0.0.1:8000/reference/mml.html</loc></url>
+</urlset>
+

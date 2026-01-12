@@ -1,0 +1,30 @@
+Package: FARL
+Type: Package
+Title: Factor-Adjusted Regularized Latent Regression
+Version: 0.1.0
+Authors@R:
+    person("Yijun", "Cheng",
+           email = "chengxb@uw.edu",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0671-9193"))
+Maintainer: The package maintainer <chengxb@uw.edu>
+Description: Implements factor-adjusted regularized latent regression models
+    for large-scale assessment and multilevel latent variable analysis.
+    The package provides estimation, simulation, and diagnostic tools
+    for FARL-type models under various conditions.
+License: What license is it under?
+Imports: 
+    paran,
+    lavaan,
+    dplyr,
+    MASS,
+    Matrix,
+    mirt,
+    psych,
+    torch,
+    glmnet
+Encoding: UTF-8
+Depends: 
+    R (>= 3.10)
+LazyData: true
+RoxygenNote: 7.3.3
