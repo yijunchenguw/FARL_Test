@@ -38,17 +38,21 @@ library(torch)
 #' latent regression and covariance parameters.
 #'
 #' @export
-mml <- function(X, Y, parTab, p, n_sam = 30, verbose = TRUE) {
+mml <- function(X, Y, parTab, n_sam = 5, method = "FARLR_EMM", lambda = seq(0.1, 0.5, by = 0.1),delta.criteria = 1e-3,iter.max = 200, window.size = 50, verbose = TRUE) {
   PA <- paran(X, iterations = 500, centile = 0, quiet = TRUE)
   K_hat <- PA$Retained
   fa <- factor.analysis(X, K_hat, method = "ml")
   Wupdate.t <- fa$Gamma
   Sgm_inv <- solve(diag(fa$Sigma))
+  p = ncol(X)
+  n = nrow(X)
   orthg <- t(Wupdate.t) %*% Sgm_inv %*% Wupdate.t/p
   V <- eigen(orthg)$vectors
   Wupdate <- t(Wupdate.t %*% V)
   Uupdate <- t(solve(Wupdate %*% Sgm_inv %*% t(Wupdate)) %*% Wupdate %*% Sgm_inv %*% t(X))
   Z <- cbind(Uupdate,X)
+  colnames(Y) <- paste0("item", c(1:ncol(Y)), sep = "")
+  storage.mode(Y) <- "integer"
   est_mirt <- suppressMessages(
     suppressWarnings(
       mirt(Y, 1, verbose = FALSE)
@@ -57,10 +61,6 @@ mml <- function(X, Y, parTab, p, n_sam = 30, verbose = TRUE) {
   theta_est_irt <- fscores(est_mirt,full.scores.SE = TRUE)
   theta_est_irt.mean <- theta_est_irt[,1]
   theta_est_irt.se <- theta_est_irt[,2]
-
-  resp_rep <- rep(1, n_sam) %x% Y
-  Z.em <- rep(1, n_sam) %x% Z
-  lambda <- seq(0.1, 0.5, by = 0.1)
   bin <- c(1, 2, 29, 15, 45)
   itemNames <- if (is.null(colnames(Y))) {
     paste0("i", sprintf("%03d", seq_len(ncol(Y))))
@@ -80,15 +80,43 @@ mml <- function(X, Y, parTab, p, n_sam = 30, verbose = TRUE) {
   )
   rownames(Y_back) <- subject
   Y_back <- Y_back[,-1]
-  resultII <- farlr_em(nrow(Y_back), Y_back, parTab, K_hat, ncol(X), lambda, delta.criteria = 1e-3,iter.max = 200, n_sam = 30, window.size = 50,theta_est_irt.mean, theta_est_irt.se, resp_rep, Z.em,bin, verbose = TRUE)
+  if (method == "FARLR_Debias") {
+
+    hatB <- t( (1/n) * t(Uupdate) %*% X )
+    hatU <- X - Uupdate %*% t(hatB)
+    Fan  <- cbind(Uupdate, hatU)
+    Z.em <- NA
+    resp_rep <- NA
+    fn <- farlr_debias
+
+  } else if (method == "FARLR_EMM") {
+    hatB <- NA
+    hatU <- NA
+    Fan  <- NA
+    resp_rep <- rep(1, n_sam) %x% Y
+    Z.em <- rep(1, n_sam) %x% Z
+    fn <- farlr_emm
+
+  } else {
+    stop("Unknown method: ", method)
+  }
+  resultII <-fn(n, resp, parTab, K_hat, ncol(X), lambda_all = lambda, delta.criteria = 1e-3,iter.max = 200, n_sam = n_sam, window.size = 50,theta_est_irt.mean, theta_est_irt.se, resp_rep, Z.em, Uupdate,hatU, Fan,bin, verbose = TRUE)
+  #resultII <- fn(nrow(Y), Y_back, parTab, K_hat, ncol(X), lambda, delta.criteria = 1e-3,iter.max = 200, n_sam = 30, window.size = 50,theta_est_irt.mean, theta_est_irt.se, resp_rep, Z.em, bin, verbose = TRUE)
   resultII$stuDat <- cbind(subject,Z)
   resultII$stuItems <- stuItems
   invisible(resultII)
 
+  # hatB<-t(1/n*t(Uupdate)%*%X) #Estimated Factor Loading
+  # hatU<-X-Uupdate%*%t(hatB)
+  # Fan <- cbind(Uupdate,hatU)
+  # resultDebias <- farlr_debias(nrow(Y_back), resp, parTab, K_hat, ncol(X), lambda, delta.criteria = 1e-3,iter.max = 200, n_sam = 10, window.size = 50,theta_est_irt.mean, theta_est_irt.se, resp_rep, Z.em, Uupdate,hatU, Fan,bin, verbose = TRUE)
+  # resultII$stuDat <- cbind(subject,Z)
+  # resultII$stuItems <- stuItems
+  # invisible(resultII)
+
 }
 mml_test <- function(){
-  load("data/sim_a1.rds")
-  mmlcomp <- mml(sim_a1$X, sim_a1$Y, sim_a1$parTab, sim_a1$p)
+  mmlcomp <-  with(sim_a1, mml(X, Y, parTab, method = "FARLR_Debias")) #mml(X = sim_a1$X, Y = sim_a1$Y, parTab = sim_a1$parTab,  method = "FARLR_Debias")
   colnames(sim_a1$X) <- paste0("X", c(1:ncol(sim_a1$X)))
   mmlcomp$X <- sim_a1$X
   mmlcomp$item_params <- sim_a1$parTab
@@ -96,3 +124,6 @@ mml_test <- function(){
   PVs <- drawPVs(mmlcomp, 10L)
   return(PVs)
 }
+mml_test2 <- function(){
+  with(sim_a1, mml(X, Y, parTab, method = "FARLR_Debias"))
+  }

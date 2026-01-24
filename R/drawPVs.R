@@ -72,7 +72,7 @@ drawPVs <- function (mmlcomp, npv = 10L,verbose = TRUE) {
   n = nrow(mmlcomp$X)
 
   resp <- reshape(
-    stuItems,
+    mmlcomp$stuItems,
     idvar = "subject",
     timevar = "key",
     direction = "wide"

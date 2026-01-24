@@ -4,14 +4,23 @@
 \alias{mml}
 \title{Fit a Latent Regression Model via the EM Algorithm}
 \usage{
-mml(X, Y, parTab, p, n_sam = 30, verbose = TRUE)
+mml(
+  X,
+  Y,
+  parTab,
+  n_sam = 5,
+  method = "FARLR_EMM",
+  lambda = seq(0.1, 0.5, by = 0.1),
+  delta.criteria = 0.001,
+  iter.max = 200,
+  window.size = 50,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{X}{Numeric matrix. Design matrix of covariates (\eqn{N \times p}).}
 
 \item{Y}{Matrix. Item response matrix (\eqn{N \times J}).}
-
-\item{p}{Integer. Number of covariates included in the latent regression.}
 
 \item{n_sam}{Integer. Number of Monte Carlo or quadrature samples used to
 approximate posterior expectations in the E-step. Default is \code{30}.}
@@ -22,6 +31,8 @@ estimation. Default is \code{TRUE}.}
 \item{a}{Numeric vector or matrix. Item discrimination parameters.}
 
 \item{d}{Numeric vector or matrix. Item difficulty (intercept) parameters.}
+
+\item{p}{Integer. Number of covariates included in the latent regression.}
 }
 \value{
 A list containing:
