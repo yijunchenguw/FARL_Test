@@ -20,16 +20,15 @@ vignette: >
 <!-- Run knitr::knit("VEMIRT.Rmd.orig", output = "VEMIRT.Rmd") to prebuild the vignette -->
 
 
-
 # Introduction
 In this tutorial, we illustrate how to conduct multidimensional item response theory (MIRT) analysis of multidimensional two parameter logistic (M2PL) and multidimensional three parameter logistic (M3PL) models, and differential item functioning (DIF) analysis of M2PL models using the `VEMIRT` package in `R`, which can be installed with
 
 ``` r
 if (!require(devtools)) install.packages("devtools")
-devtools::install_github("MAP-LAB-UW/VEMIRT", build_vignettes = T)
+devtools::install_github("yijunchenguw/FARL_Test", build_vignettes = T)
 torch::install_torch()
 ```
-The package requires a C++ compiler to work properly, and users are referred to https://github.com/MAP-LAB-UW/VEMIRT for more information.
+The package requires a C++ compiler to work properly, and users are referred to https://github.com/yijunchenguw/FARL_Test for more information.
 
 ``` r
 library(VEMIRT)
